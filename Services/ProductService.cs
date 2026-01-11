@@ -28,10 +28,17 @@ namespace JigsawProductBrowser.Services
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<Product>($"products/{id}");
+                var response = await _httpClient.GetAsync($"products/{id}");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    return null;
+
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<Product>();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error fetching product {id}: {ex.Message}");
                 return null;
             }
         }
