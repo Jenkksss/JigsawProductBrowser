@@ -1,7 +1,12 @@
+using JigsawProductBrowser.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient<ProductService>(client => {
+    client.BaseAddress = new Uri("https://dummyjson.com/");
+});
 
 var app = builder.Build();
 
