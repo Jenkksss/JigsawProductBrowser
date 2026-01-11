@@ -1,0 +1,18 @@
+﻿@model JigsawProductBrowser.Models.Product
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="@Model.Thumbnail" class="img-fluid rounded shadow" />
+        </div>
+        <div class="col-md-6">
+            <h2>@Model.Title</h2>
+            <h3 class="text-success">$@Model.Price</h3>
+            <p class="lead">@Model.Description</p>
+            <hr />
+            <p><strong>Shipping:</strong> @Model.ShippingInformation</p>
+            <p><strong>Tags:</strong> @string.Join(", ", Model.Tags)</p>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
