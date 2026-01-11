@@ -1,45 +1,90 @@
 ﻿@model JigsawProductBrowser.Models.ProductResponse
+
 @{
+    ViewData["Title"] = "Product Gallery";
     int currentPage = (Model.Skip / Model.Limit) + 1;
     int totalPages = (int)Math.Ceiling((double)Model.Total / Model.Limit);
 }
 
-<div class="container">
-    <h1 class="my-4">Product Browser <small class="text-muted">(@Model.Total total)</small></h1>
-
-    <div class="row">
-        @foreach (var p in Model.Products)
-        {
-            <div class="col-md-3 mb-4">
-                <div class="card h-100">
-                    <img src="@p.Thumbnail" class="card-img-top" style="height: 150px; object-fit: cover;">
-                    <div class="card-body">
-                        <h6>@p.Title</h6>
-                        <p class="text-success">$@p.Price</p>
-                        <div>
-                            @foreach (var tag in p.Tags)
-                            {
-                                <span class="badge bg-secondary me-1">@tag</span>
-                            }
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-top-0">
-                        <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary w-100">View</a>
-                    </div>
-                </div>
-            </div>
-        }
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Product Browser</h1>
+        <span class="badge bg-secondary">Total Results: @Model.Total</span>
     </div>
 
-    <nav>
-        <ul class="pagination">
-            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">Previous</a>
-            </li>
-            <li class="page-item disabled"><span class="page-link">Page @currentPage of @totalPages</span></li>
-            <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Next</a>
-            </li>
-        </ul>
-    </nav>
+    @if (Model.Products == null || !Model.Products.Any())
+    {
+        <div class="alert alert-warning">No products found.</div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var item in Model.Products)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="p-3 bg-light">
+                            <img src="@item.Thumbnail"
+                                 class="card-img-top mx-auto d-block"
+                                 alt="@item.Title"
+                                 style="height: 160px; object-fit: contain;">
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title fw-bold">@item.Title</h6>
+
+                            <div class="mb-2">
+                                @foreach (var tag in item.Tags)
+                                {
+                                    <span class="badge rounded-pill bg-light text-dark border me-1" style="font-size: 0.7rem;">
+                                        @tag
+                                    </span>
+                                }
+                            </div>
+
+                            <p class="card-text text-primary fs-5 fw-bold">
+                                @item.Price.ToString("C")
+                            </p>
+
+                            <div class="mt-auto">
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-outline-primary w-100 rounded-pill shadow-sm">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <nav aria-label="Product pagination" class="mt-5 border-top pt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link shadow-sm" asp-action="Index" asp-route-page="@(currentPage - 1)">Previous</a>
+                </li>
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link shadow-sm" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <a class="page-link shadow-sm" asp-action="Index" asp-route-page="@(currentPage + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+</style>

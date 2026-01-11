@@ -1,18 +1,65 @@
 ﻿@model JigsawProductBrowser.Models.Product
 
-<div class="container mt-5">
-    <div class="row">
+@{
+    ViewData["Title"] = @Model.Title;
+}
+
+<div class="container mt-5 mb-5">
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-muted">
+            <i class="bi bi-arrow-left"></i> &larr; Back to Product List
+        </a>
+    </div>
+
+    <div class="row g-5">
         <div class="col-md-6">
-            <img src="@Model.Thumbnail" class="img-fluid rounded shadow" />
+            <div class="card border-0 shadow-sm overflow-hidden bg-light rounded-4">
+                <img src="@Model.Thumbnail"
+                     class="img-fluid w-100 p-4"
+                     alt="@Model.Title"
+                     style="max-height: 500px; object-fit: contain;">
+            </div>
         </div>
+
         <div class="col-md-6">
-            <h2>@Model.Title</h2>
-            <h3 class="text-success">$@Model.Price</h3>
-            <p class="lead">@Model.Description</p>
-            <hr />
-            <p><strong>Shipping:</strong> @Model.ShippingInformation</p>
-            <p><strong>Tags:</strong> @string.Join(", ", Model.Tags)</p>
-            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            <div class="ps-lg-4">
+                <h1 class="display-5 fw-bold mb-3">@Model.Title</h1>
+
+                <div class="mb-3">
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 me-1">
+                            @tag
+                        </span>
+                    }
+                </div>
+
+                <h2 class="text-success mb-4 fw-light">@Model.Price.ToString("C")</h2>
+
+                <div class="mb-4">
+                    <h5 class="fw-bold">Description</h5>
+                    <p class="text-muted lh-base">@Model.Description</p>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <small class="text-uppercase text-muted fw-bold d-block mb-1" style="font-size: 0.7rem;">Shipping Info</small>
+                            <span class="text-dark">@Model.ShippingInformation</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <small class="text-uppercase text-muted fw-bold d-block mb-1" style="font-size: 0.7rem;">Product ID</small>
+                            <span class="text-dark">#@Model.Id</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <button class="btn btn-primary btn-lg w-100 rounded-pill shadow">Add to Basket</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
